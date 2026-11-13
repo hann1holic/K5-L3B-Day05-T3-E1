@@ -42,7 +42,7 @@
   .booking-banner .title { font-weight: 700; color: #9a3412; display: flex; justify-content: space-between; }
   .booking-banner .sub { color: #7c2d12; margin-top: 4px; }
 
-  .chat-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 12px; max-height: 620px; overflow-y: auto; }
+  .chat-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 12px; max-height: 640px; overflow-y: auto; }
   .msg-user { align-self: flex-end; background: var(--primary); color: #fff; padding: 10px 14px; border-radius: 14px 14px 2px 14px; max-width: 85%; font-size: 14px; line-height: 1.45; }
   .msg-ai { align-self: flex-start; background: #f8fafc; border: 1px solid var(--border); padding: 14px; border-radius: 2px 14px 14px 14px; width: 100%; font-size: 14px; line-height: 1.5; }
   .ai-header { font-size: 12px; font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
@@ -60,8 +60,8 @@
   .f-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .f-warn { font-size: 12px; color: var(--danger); font-weight: 600; margin-top: 2px; }
 
-  .hold-banner { background: var(--success-bg); border: 1px solid #a6f4c5; color: var(--success); padding: 10px 12px; border-radius: 8px; font-size: 13px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; }
-  .timer { font-family: monospace; font-weight: 700; font-size: 14px; background: #fff; padding: 2px 6px; border-radius: 4px; border: 1px solid #a6f4c5; }
+  .hold-banner { background: var(--success-bg); border: 1px solid #a6f4c5; color: var(--success); padding: 10px 12px; border-radius: 8px; font-size: 13px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .timer { font-family: monospace; font-weight: 700; font-size: 14px; background: #fff; padding: 2px 6px; border-radius: 4px; border: 1px solid #a6f4c5; flex-shrink: 0; }
 
   .danger-box { background: var(--danger-bg); border: 1px solid #fecdca; color: #912018; padding: 12px; border-radius: 8px; font-size: 13px; margin: 10px 0; }
   .danger-box ul { margin: 6px 0 0 18px; padding: 0; }
@@ -74,6 +74,8 @@
   .btn-pri:hover:not(:disabled) { background: var(--primary-dark); }
   .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
   .btn-danger:hover:not(:disabled) { background: #b42318; }
+  .btn-outline-danger { background: #fff; color: var(--danger); border-color: #fecdca; }
+  .btn-outline-danger:hover:not(:disabled) { background: var(--danger-bg); }
 
   /* Right: Inspector / Mapping Panel */
   .side-panel { display: flex; flex-direction: column; gap: 16px; }
@@ -200,6 +202,28 @@ function setStep(st) {
   render();
 }
 
+function renderRefundConfirmationBlock(evidHTML, staffBtn, backActionBtn) {
+  return `
+    <div class="danger-box">
+      <div style="display:flex;align-items:flex-start"><span class="pin">3</span><b>Cảnh báo trước khi gửi yêu cầu hoàn vé (Không thể đảo ngược):</b></div>
+      <ul>
+        <li>Sau khi gửi, yêu cầu hoàn vé <b>không thể huỷ hay rút lại</b> để đổi sang chuyến khác.</li>
+        <li>Tiền hoàn về tài khoản/thẻ gốc có thể mất tới <b>90 ngày</b>.</li>
+      </ul>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:10px;font-weight:600;cursor:pointer">
+        <input type="checkbox" ${refundChecked ? 'checked' : ''} onchange="refundChecked=this.checked;render()">
+        Tôi đã hiểu hoàn vé không thể huỷ và muốn gửi yêu cầu cho cả 2 hành khách.
+      </label>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-danger" ${!refundChecked ? 'disabled' : ''} onclick="setStep('refund_done')">Gửi yêu cầu hoàn vé</button>
+      ${backActionBtn}
+      ${staffBtn}
+    </div>
+    ${evidHTML}
+  `;
+}
+
 function render() {
   const chat = document.getElementById('chat-area');
   let html = '';
@@ -214,18 +238,37 @@ function render() {
       html += `<div class="msg-ai">
         <div class="ai-header"><span>Trợ lý đặt chỗ AI</span><span class="ai-tag">Đã gọi: doi_chuyen_bay</span></div>
         <div class="hold-banner" style="margin-top:0">
-          <div><b>Đã đổi sang chuyến ${selectedFlight}</b> cho 2 hành khách (Nguyễn Minh An & Nguyễn Gia Bình).<br><small>Vé mới gửi về email trong 60 phút. Lần đổi miễn phí duy nhất đã được dùng.</small></div>
+          <div><b>Đã đổi sang chuyến ${selectedFlight}</b> cho 2 hành khách (Nguyễn Minh An & Nguyễn Gia Bình).<br><small>Vé mới gửi về email trong 60 phút. <b>Lần đổi miễn phí duy nhất đã được dùng</b> — hệ thống không thể tự đổi lại miễn phí; nếu vừa bấm nhầm, hãy bấm gặp nhân viên ngay để được hỗ trợ ngoại lệ.</small></div>
         </div>
-        <div class="action-row">${staffBtn}</div>
+        <div class="action-row">
+          <button class="btn btn-pri" onclick="setStep('staff')"><span class="pin">5</span>Bấm nhầm · Gặp nhân viên gấp</button>
+        </div>
       </div>`;
     } else if (step === 'undone_hold') {
       html += `<div class="msg-ai">
         <div class="ai-header"><span>Trợ lý đặt chỗ AI</span><span class="ai-tag">Đã nhả giữ chỗ</span></div>
-        <div>Đã huỷ giữ chỗ tạm thời. Lần đổi miễn phí duy nhất của chị vẫn còn nguyên. Chị muốn chọn chuyến khác bên dưới hay gặp nhân viên ạ?</div>
+        <div>Đã huỷ giữ chỗ tạm thời. Lần đổi miễn phí duy nhất của chị vẫn còn nguyên. Chị muốn chọn chuyến khác bên dưới, yêu cầu hoàn vé hay gặp nhân viên ạ?</div>
         <div class="action-row">
           <button class="btn btn-pri" onclick="setStep('init')">Xem lại các chuyến còn chỗ</button>
+          <button class="btn btn-outline-danger" onclick="refundChecked=false;setStep('ask_refund')">Không phù hợp · Yêu cầu hoàn vé</button>
           ${staffBtn}
         </div>
+      </div>`;
+    } else if (step === 'ask_refund') {
+      html += `<div class="msg-user">Sáng mai chị không kịp họp rồi, không có chuyến tối nay thì hoàn vé cho chị đi.</div>`;
+      html += `<div class="msg-ai">
+        <div class="ai-header"><span>Trợ lý đặt chỗ AI</span><span class="ai-tag">Chuyển luồng hoàn vé · Chờ duyệt</span></div>
+        <div>Vì không có chuyến thay thế phù hợp lịch trình của chị, chị có thể gửi yêu cầu hoàn 100% tiền vé theo chính sách huỷ do thời tiết.</div>
+        ${renderRefundConfirmationBlock(evidHTML, staffBtn, `<button class="btn" onclick="setStep('init')"><span class="pin">4</span>Quay lại giữ chỗ sáng mai</button>`)}
+      </div>`;
+    } else if (step === 'refund_done') {
+      html += `<div class="msg-ai">
+        <div class="ai-header"><span>Trợ lý đặt chỗ AI</span><span class="ai-tag">Đã gọi: gui_yeu_cau_hoan_ve</span></div>
+        <div class="danger-box" style="margin-top:0">
+          <b>Đã gửi yêu cầu hoàn vé (Mã: HT-55821)</b> cho 2 hành khách.<br>
+          Yêu cầu này không thể huỷ. Tiền sẽ hoàn về phương thức thanh toán gốc trong tối đa 90 ngày.
+        </div>
+        <div class="action-row">${staffBtn}</div>
       </div>`;
     } else if (step === 'staff') {
       html += renderStaffTransfer();
@@ -233,14 +276,14 @@ function render() {
       html += `<div class="msg-ai">
         <div class="ai-header"><span>Trợ lý đặt chỗ AI</span><span class="ai-tag">Đã gọi: giu_cho_chuyen_moi</span></div>
         <div class="conf-box"><span class="pin">1</span><div><b>Chưa thể đổi chuyến tối nay:</b> Chuyến BM 217 (21:00 hôm nay) chỉ <b>còn 1 ghế</b>, không đủ cho cả 2 mẹ con trong mã TRV-7Q2K.</div></div>
-        <div>Để giữ suất bay sớm nhất đủ 2 ghế, mình đã tạm giữ chỗ chuyến sáng mai cho chị:</div>
+        <div>Để giữ suất bay sớm nhất đủ 2 ghế, mình đã tạm giữ chỗ chuyến sáng mai cho chị (hoặc chị có thể yêu cầu hoàn 100% vé nếu không phù hợp):</div>
         <div class="flight-list">
           ${flights.map(f => `
             <div class="flight-card ${!f.ok ? 'disabled' : (f.code === selectedFlight ? 'selected' : '')}">
               <div class="f-info">
                 <b>${f.code}</b> · ${f.time}
                 <div class="${f.ok ? 'f-meta' : 'f-warn'}">${f.note}</div>
-              </div>  
+              </div>
               ${!f.ok ? `<button class="btn" disabled>Không đủ ghế</button>` : 
                 (f.code === selectedFlight ? `<span style="font-size:12px;font-weight:700;color:var(--primary)">Đang chọn</span>` : 
                 `<button class="btn" onclick="selectFlight('${f.code}')"><span class="pin">4</span>Đổi sang chuyến này</button>`)}
@@ -255,6 +298,7 @@ function render() {
         <div class="action-row">
           <button class="btn btn-pri" onclick="setStep('done')">Xác nhận đổi sang ${selectedFlight}</button>
           <button class="btn" onclick="setStep('undone_hold')"><span class="pin">4</span>Huỷ giữ chỗ</button>
+          <button class="btn btn-outline-danger" onclick="refundChecked=false;setStep('ask_refund')">Không phù hợp · Hoàn vé</button>
           ${staffBtn}
         </div>
         ${evidHTML}
@@ -279,30 +323,22 @@ function render() {
       html += `<div class="msg-ai">
         <div class="ai-header"><span>Trợ lý đặt chỗ AI</span><span class="ai-tag">Chặn gửi tự động · Chờ duyệt</span></div>
         <div class="conf-box"><span class="pin">1</span><div><b>Về tiền bồi thường:</b> Chuyến BM 213 huỷ do thời tiết (bão) thuộc trường hợp bất khả kháng nên hãng Bay Mẫu <b>không bồi thường tiền mặt</b> (chỉ hỗ trợ đổi miễn phí 1 lần hoặc hoàn 100% vé).</div></div>
-        <div class="danger-box">
-          <div style="display:flex;align-items:flex-start"><span class="pin">3</span><b>Cảnh báo trước khi gửi yêu cầu hoàn vé (Không thể đảo ngược):</b></div>
-          <ul>
-            <li>Sau khi gửi, yêu cầu hoàn vé <b>không thể huỷ hay rút lại</b> để đổi sang chuyến khác.</li>
-            <li>Tiền hoàn về tài khoản/thẻ gốc có thể mất tới <b>90 ngày</b>.</li>
-          </ul>
-          <label style="display:flex;align-items:center;gap:6px;margin-top:10px;font-weight:600;cursor:pointer">
-            <input type="checkbox" ${refundChecked ? 'checked' : ''} onchange="refundChecked=this.checked;render()">
-            Tôi đã hiểu hoàn vé không thể huỷ và muốn gửi yêu cầu cho cả 2 hành khách.
-          </label>
-        </div>
-        <div class="action-row">
-          <button class="btn btn-danger" ${!refundChecked ? 'disabled' : ''} onclick="setStep('refund_done')">Gửi yêu cầu hoàn vé</button>
-          <button class="btn btn-pri" onclick="setScenario('seat_trap')"><span class="pin">4</span>Giữ chỗ sáng mai để cân nhắc thêm</button>
-          ${staffBtn}
-        </div>
-        ${evidHTML}
+        ${renderRefundConfirmationBlock(evidHTML, staffBtn, `<button class="btn btn-pri" onclick="setScenario('seat_trap')"><span class="pin">4</span>Giữ chỗ sáng mai để cân nhắc thêm</button>`)}
       </div>`;
     }
   }
   else if (currentScenario === 'unaccompanied') {
     html += `<div class="msg-user">Đổi sang 7h sáng mai cho bé Bình bay trước đi em, bố cháu đón ở Tân Sơn Nhất, chị kẹt việc bay chuyến sau.</div>`;
     
-    if (step === 'staff') {
+    if (step === 'undone_hold') {
+      html += `<div class="msg-ai">
+        <div class="ai-header"><span>Trợ lý đặt chỗ AI</span><span class="ai-tag">Đã nhả giữ chỗ</span></div>
+        <div>Đã huỷ giữ chỗ tạm thời cho chuyến BM 201. Chị có thể bấm chuyển nhân viên bên dưới để được tư vấn thủ tục trẻ em đi một mình (UM).</div>
+        <div class="action-row">
+          <button class="btn btn-pri" onclick="setStep('staff')"><span class="pin">5</span>Chuyển ngay cho nhân viên hỗ trợ</button>
+        </div>
+      </div>`;
+    } else if (step === 'staff') {
       html += renderStaffTransfer();
     } else {
       html += `<div class="msg-ai">
@@ -310,9 +346,14 @@ function render() {
         <div class="danger-box" style="margin-top:0">
           <div style="display:flex;align-items:flex-start"><span class="pin">1</span><div><b>Không thể tự tách vé cho trẻ em bay một mình:</b> Hành khách <b>Nguyễn Gia Bình (5 tuổi)</b> cần thủ tục trẻ em đi một mình (UM) có xác nhận an toàn của hãng Bay Mẫu. Trợ lý AI không được phép tách đặt chỗ này.</div></div>
         </div>
-        <div style="margin-top:8px">Mình đã chuẩn bị sẵn thông tin mã <b>TRV-7Q2K</b> và giữ tạm 2 ghế chuyến <b>BM 201 (07:00 13/11)</b> để nhân viên hỗ trợ chị làm thủ tục ngay mà không mất chỗ.</div>
+        <div style="margin-top:8px">Mình đã chuẩn bị sẵn thông tin mã <b>TRV-7Q2K</b> và giữ tạm 2 ghế chuyến <b>BM 201 (07:00 13/11)</b> để nhân viên hỗ trợ chị làm thủ tục ngay mà không mất chỗ:</div>
+        <div class="hold-banner">
+          <div style="display:flex;align-items:center"><span class="pin">4</span><span>Đang giữ 2 ghế <b>BM 201 (07:00 13/11)</b> chờ nhân viên xử lý</span></div>
+          <span class="timer" id="hold-timer">20:00</span>
+        </div>
         <div class="action-row">
           <button class="btn btn-pri" onclick="setStep('staff')"><span class="pin">5</span>Chuyển ngay cho nhân viên hỗ trợ</button>
+          <button class="btn" onclick="setStep('undone_hold')"><span class="pin">4</span>Huỷ giữ chỗ</button>
         </div>
         ${evidHTML}
       </div>`;
@@ -320,7 +361,7 @@ function render() {
   }
 
   chat.innerHTML = html;
-  if (currentScenario === 'seat_trap' && step === 'init') startTimer();
+  if ((currentScenario === 'seat_trap' || currentScenario === 'unaccompanied') && step === 'init') startTimer();
 }
 
 function renderStaffTransfer() {
