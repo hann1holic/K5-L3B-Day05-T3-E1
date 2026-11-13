@@ -102,11 +102,21 @@
 **Lời hứa với khách:** nhóm không hứa “AI đổi vé ngay”; nhóm hứa “AI tìm chuyến còn chỗ, giữ chỗ nếu có thể và chỉ đổi sau khi bạn xem lại, xác nhận rõ”. Thêm một bước xác nhận để giảm nguy cơ mất lượt đổi miễn phí hoặc tách hai hành khách.
 
 ## §5. Prototype  (chặng 5)
-- File: [`prototype/index.html`](prototype/index.html), HTML/CSS/JS thuần chạy cục bộ. Không có lời gọi AI thật; dữ liệu và kết quả tool được mock để demo thiết kế, không giao dịch thật.
-- Luồng bấm: xem đặt chỗ đã huỷ → thấy BM 201 được giữ tạm cho cả hai trong 20 phút (mô phỏng §3 #2) → xác nhận đổi ngay trên thẻ giữ chỗ; có thể đổi lựa chọn sang BM 205 hoặc chuyển nhân viên. Ca hoàn có cảnh báo, ô xác nhận hiểu hậu quả và nút gửi riêng (mô phỏng §3 #3). BM 217 không chọn được cho cả hai vì chỉ còn 1 ghế.
-- Ảnh đánh số: §3 tham chiếu `prototype/case2.png` và `prototype/case3.png`; cả hai ảnh đang có trong thư mục. Prototype có số chú thích `[1]–[8]` và bảng giải thích ở cuối trang.
-- Vị trí nguyên tắc trên giao diện: nhãn “Trợ lý đặt chỗ (AI)” ở đầu hội thoại (G1 · Điều 11 [Luật Trí tuệ nhân tạo 134/2025/QH15](https://vanban.chinhphu.vn/?docid=216334&pageid=27160&typegroupid=3)); `[1]` HAX G2 — nói rõ BM 217 chỉ có 1 ghế; `[2]` HAX G11 + PAIR Explainability — nêu căn cứ; `[3]` HAX G8/G9 + PAIR Control — giữ tạm có đếm ngược; `[4]` HAX G10 — hỏi lại; `[5]` G1 + PAIR Errors — xác nhận riêng trước khi hoàn; `[6]` HAX G11 — trích chính sách; `[7]` HAX G8 — đường lui giữ chỗ; `[8]` PAIR Errors + Graceful Failure — gặp nhân viên kèm tóm tắt.
-- Quyết định thiết kế: đặt chuyến gốc, số ghế, hành khách và trạng thái “chưa đổi” cạnh hành động; tách nút “Giữ chỗ” và “Xác nhận đổi”. Đã cân nhắc nút “Đổi ngay” nhưng loại vì làm mờ khác biệt giữa giữ chỗ tạm thời và đổi vé khó đảo. Dùng dữ liệu fixture, không hiển thị phần trăm tự tin giả.
+- `prototype/index.html` (HTML/CSS/JS thuần, chạy trực tiếp trên trình duyệt không cần cài đặt).
+- Toàn bộ dữ liệu đặt chỗ `TRV-7Q2K` (2 hành khách: Nguyễn Minh An 34t, Nguyễn Gia Bình 5 tuổi; chuyến gốc `BM 213` huỷ do bão; danh sách 3 chuyến thay thế) và luồng hội thoại được dựng từ bộ fixture của Track T3. Không sử dụng lời gọi AI thật (chỉ thiết kế).
+
++ ảnh prototype/screen-1.png` & `prototype/screen-2.png`: 
+    - Số [1] — HAX G2 (Làm rõ hệ thống làm tốt đến đâu / giới hạn): Hộp cảnh báo vàng nêu rõ lý do không thể đáp ứng yêu cầu gốc (chuyến `BM 217` lúc 21:00 chỉ còn 1 ghế không đủ cho 2 mẹ con; hoặc huỷ do bão nên không có bồi thường tiền mặt) thay vì để AI đoán bừa.
+    - Số [2] — HAX G11 + PAIR Explainability (Giải thích căn cứ): Khung "Căn cứ dữ liệu" bên dưới mỗi phản hồi trích dẫn trực tiếp nguồn từ `tra_cuu_dat_cho` (mã `TRV-7Q2K`, lý do huỷ do bão, chính sách đổi 1 lần miễn phí trong 48h) để hành khách tự kiểm chứng.
+    - Số [3] — HAX G10 (Thu hẹp phạm vi khi nghi ngờ) & Mức tự chủ `Cần duyệt`: Khoá cứng việc gọi `doi_chuyen_bay` (mất lượt miễn phí duy nhất) và `gui_yeu_cau_hoan_ve` (không thể rút lại); yêu cầu người dùng bấm nút 'Xác nhận đổi' hoặc tích vào ô cam kết hiểu rõ hậu quả hoàn vé mới mở khoá nút gửi.
+    - Số [4] — HAX G8/G9 + PAIR Control (Sửa & Hoàn tác dễ dàng) & Mức tự chủ `Tự làm`: Công cụ `giu_cho_chuyen_moi` tự động giữ 2 ghế chuyến `BM 201` kèm đồng hồ đếm ngược `20:00` để chống hết chỗ lúc chờ, đi kèm nút 'Đổi sang chuyến này' (`BM 205`) hoặc Huỷ giữ chỗ để người dùng hoàn tác ngay mà không mất lượt đổi miễn phí.
+    - Số [5] — PAIR Graceful Failure & Mức tự chủ `Tự làm` / `Cấm`: Nút 'Gặp nhân viên hỗ trợ' luôn hiển thị ở mọi bước; riêng ở Ca 3 (tách vé cho bé 5 tuổi bay một mình — hành động thuộc mức Cấm), giao diện loại bỏ hoàn toàn nút thực thi và chỉ giữ nút chuyển nhân viên kèm tóm tắt hồ sơ sẵn có.
+
+- Quyết định:
+  - Đã cân nhắc: 1. Chỉ dùng khung chat thuần văn bản để người dùng gõ câu trả lời xác nhận; 2.Kết hợp hội thoại với thẻ hành động tương tác trực quan (chọn chuyến, ...) và bảng đối chiếu mức tự chủ.
+  - Chọn phương án: 2.
+  - Vì sao: Hành khách vừa bị huỷ chuyến thường đang vội và đi cùng trẻ nhỏ; việc bấm thẻ chọn chuyến và tick xác nhận giúp loại bỏ hoàn toàn sự mơ hồ trong ngôn ngữ tự nhiên (tránh lỗi AI hiểu nhầm câu chat ngắn như "ok em" thành đồng ý hoàn vé vĩnh viễn), đồng thời đồng hồ đếm ngược 20 phút giúp giảm áp lực tâm lý sợ hết chỗ.
+  - Loại phương án 1 vì sao: Chat thuần chữ dễ phát sinh xác nhận mơ hồ và khó hiển thị đồng thời nhiều lớp thông tin trên màn hình điện thoại.
 
 ## §6. Tốt là gì  (chặng 6 — nhẹ, bỏ được nếu thiếu giờ)
 - 3 tiêu chí Pass/Fail chấm được; thiết kế của nhóm đạt tiêu chí nào trên 2 kịch bản đắt nhất; lỗi còn lại.
