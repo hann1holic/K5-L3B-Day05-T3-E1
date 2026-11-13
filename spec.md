@@ -5,7 +5,7 @@
 > **Một quyết định = bốn ý:** đã cân nhắc phương án nào · chọn phương án nào · vì sao · loại các phương án kia vì sao. Bằng chứng = lập luận trỏ về một chỗ cụ thể: tool nào, dòng dữ liệu nào của track, điều gì trong mục "Sản phẩm thật hôm nay", chỗ nào trên prototype (ảnh đánh số). Không chạy agent.
 
 ```markdown
-# Bài nộp LAB5 — [Track] · Nhóm [tên]
+# Bài nộp LAB5 — [Track 3] · Nhóm [tên]
 [Danh sách thành viên và việc mỗi người làm — copy bảng từ README]
 
 ## §1. Lát cắt & phạm vi
@@ -68,10 +68,24 @@ Thêm:
 - Một mức tự chủ đã đổi lời hứa nào với người dùng.
 
 ## §5. Prototype  (chặng 5)
-- Link hoặc file · công cụ · phần nào mock · có lời gọi AI thật không.
-- 1–2 ảnh có đánh số; mỗi số: thể hiện gì · nguyên tắc HAX/PAIR nào · mức tự chủ nào.
-- Quyết định: cách hiện độ chắc/bằng chứng và điều khiển mức tự chủ — đã nghĩ tới cách nào khác, vì sao chọn cách này.
+- Link hoặc file · công cụ · phần nào mock · có lời gọi AI thật không:
++ `prototype/index.html` (HTML/CSS/JS thuần, chạy trực tiếp trên trình duyệt không cần cài đặt).
++ Toàn bộ dữ liệu đặt chỗ `TRV-7Q2K` (2 hành khách: Nguyễn Minh An 34t, Nguyễn Gia Bình 5 tuổi; chuyến gốc `BM 213` huỷ do bão; danh sách 3 chuyến thay thế) và luồng hội thoại được dựng từ bộ fixture của Track T3. Không sử dụng lời gọi AI thật (chỉ thiết kế).
 
+- 1–2 ảnh có đánh số; mỗi số: thể hiện gì · nguyên tắc HAX/PAIR nào · mức tự chủ nào: 
++ ảnh prototype/screen-1.png` & `prototype/screen-2.png`: 
+    - Số [1] — HAX G2 (Làm rõ hệ thống làm tốt đến đâu / giới hạn): Hộp cảnh báo vàng nêu rõ lý do không thể đáp ứng yêu cầu gốc (chuyến `BM 217` lúc 21:00 chỉ còn 1 ghế không đủ cho 2 mẹ con; hoặc huỷ do bão nên không có bồi thường tiền mặt) thay vì để AI đoán bừa.
+    - Số [2] — HAX G11 + PAIR Explainability (Giải thích căn cứ): Khung "Căn cứ dữ liệu" bên dưới mỗi phản hồi trích dẫn trực tiếp nguồn từ `tra_cuu_dat_cho` (mã `TRV-7Q2K`, lý do huỷ do bão, chính sách đổi 1 lần miễn phí trong 48h) để hành khách tự kiểm chứng.
+    - Số [3] — HAX G10 (Thu hẹp phạm vi khi nghi ngờ) & Mức tự chủ `Cần duyệt`: Khoá cứng việc gọi `doi_chuyen_bay` (mất lượt miễn phí duy nhất) và `gui_yeu_cau_hoan_ve` (không thể rút lại); yêu cầu người dùng bấm nút 'Xác nhận đổi' hoặc tích vào ô cam kết hiểu rõ hậu quả hoàn vé mới mở khoá nút gửi.
+    - Số [4] — HAX G8/G9 + PAIR Control (Sửa & Hoàn tác dễ dàng) & Mức tự chủ `Tự làm`: Công cụ `giu_cho_chuyen_moi` tự động giữ 2 ghế chuyến `BM 201` kèm đồng hồ đếm ngược `20:00` để chống hết chỗ lúc chờ, đi kèm nút 'Đổi sang chuyến này' (`BM 205`) hoặc Huỷ giữ chỗ để người dùng hoàn tác ngay mà không mất lượt đổi miễn phí.
+    - Số [5] — PAIR Graceful Failure & Mức tự chủ `Tự làm` / `Cấm`: Nút 'Gặp nhân viên hỗ trợ' luôn hiển thị ở mọi bước; riêng ở Ca 3 (tách vé cho bé 5 tuổi bay một mình — hành động thuộc mức Cấm), giao diện loại bỏ hoàn toàn nút thực thi và chỉ giữ nút chuyển nhân viên kèm tóm tắt hồ sơ sẵn có.
+
+- Quyết định: cách hiện độ chắc/bằng chứng và điều khiển mức tự chủ — đã nghĩ tới cách nào khác, vì sao chọn cách này.
+  - Đã cân nhắc: 1. Chỉ dùng khung chat thuần văn bản để người dùng gõ câu trả lời xác nhận; 2.Kết hợp hội thoại với thẻ hành động tương tác trực quan (chọn chuyến, ...) và bảng đối chiếu mức tự chủ.
+  - Chọn phương án: 2.
+  - Vì sao: Hành khách vừa bị huỷ chuyến thường đang vội và đi cùng trẻ nhỏ; việc bấm thẻ chọn chuyến và tick xác nhận giúp loại bỏ hoàn toàn sự mơ hồ trong ngôn ngữ tự nhiên (tránh lỗi AI hiểu nhầm câu chat ngắn như "ok em" thành đồng ý hoàn vé vĩnh viễn), đồng thời đồng hồ đếm ngược 20 phút giúp giảm áp lực tâm lý sợ hết chỗ.
+  - Loại phương án 1 vì sao: Chat thuần chữ dễ phát sinh xác nhận mơ hồ và khó hiển thị đồng thời nhiều lớp thông tin trên màn hình điện thoại.
+  
 ## §6. Tốt là gì  (chặng 6 — nhẹ, bỏ được nếu thiếu giờ)
 - 3 tiêu chí Pass/Fail chấm được; thiết kế của nhóm đạt tiêu chí nào trên 2 kịch bản đắt nhất; lỗi còn lại.
 
