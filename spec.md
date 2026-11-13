@@ -2,8 +2,8 @@
 
 | Họ và Tên | Mã Học Viên | Việc đã làm |
 |---|---|---|
-| Nguyễn Tấn Dũng | 2A202603734 | Phần 2: UX khi AI sai (§3) |
 | Nguyễn Duy Anh | 2A202603796 | Phần 1: phạm vi và kịch bản rủi ro (§1–§2); dựng prototype (§5) |
+| Nguyễn Tấn Dũng | 2A202603734 | Phần 2: UX khi AI sai (§3) |
 | Lê Huy Anh | 2A202603786 | Phần 3: mức tự chủ của các tool (§4) |
 
 ## §1. Lát cắt & phạm vi
