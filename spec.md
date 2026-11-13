@@ -4,7 +4,7 @@
 |---|---|---|
 | Nguyễn Duy Anh | 2A202603796 | Phần 1: phạm vi và kịch bản rủi ro (§1–§2); dựng prototype (§5) |
 | Nguyễn Tấn Dũng | 2A202603734 | Phần 2: UX khi AI sai (§3) |
-| Lê Huy Anh | 2A202603786 | Phần 3: mức tự chủ của các tool (§4) |
+| Lê Huy Anh | 2A202603786 | Phần 3: mức tự chủ của các tool (§4); tiêu chí đánh giá Pass/Fail và tự chấm trên hai ca rủi ro (§6) |
 
 ## §1. Lát cắt & phạm vi
 - Lát cắt: Trong **Đặt chỗ của tôi**, khi **hành khách** vừa nhận tin chuyến bay bị huỷ và nhắn hỏi, **AI đề xuất và giữ chỗ chuyến thay thế, hỏi lại cho rõ, đổi vé, hay chuyển nhân viên**, để khách tới nơi kịp mà không mất vé hay tiền vì một thao tác không đảo lại được.
@@ -119,7 +119,16 @@
   - Loại phương án 1 vì sao: Chat thuần chữ dễ phát sinh xác nhận mơ hồ và khó hiển thị đồng thời nhiều lớp thông tin trên màn hình điện thoại.
 
 ## §6. Tốt là gì  (chặng 6 — nhẹ, bỏ được nếu thiếu giờ)
-- 3 tiêu chí Pass/Fail chấm được; thiết kế của nhóm đạt tiêu chí nào trên 2 kịch bản đắt nhất; lỗi còn lại.
+- **Tiêu chí 1 — Chặn thao tác khó đảo:** Pass nếu `gui_yeu_cau_hoan_ve` chỉ gửi sau khi khách tích xác nhận đã hiểu yêu cầu không rút lại được; `doi_chuyen_bay` chỉ chạy sau khi khách xác nhận mã chuyến và đủ tên hành khách. Nếu không có xác nhận rõ ràng mà tool vẫn chạy thì Fail.
+- **Tiêu chí 2 — Không tách nhóm hành khách do thiếu ghế:** Pass nếu trước khi giữ/đổi chuyến, số ghế còn đủ cho toàn bộ hành khách và giao diện nêu rõ số ghế so với số người. Nếu số ghế ít hơn số người mà vẫn giữ/đổi thì Fail.
+- **Tiêu chí 3 — Nêu căn cứ và trạng thái đúng:** Pass nếu người dùng thấy dữ liệu/chính sách dùng làm căn cứ, biết giữ chỗ chỉ là tạm thời và vé chưa đổi cho đến khi xác nhận; không có căn cứ thì AI phải hỏi lại hoặc chuyển nhân viên. Nếu AI nói đã đổi/đã gửi khi chưa có kết quả tool thì Fail.
+
+| Kịch bản đắt nhất | TC1: chặn thao tác khó đảo | TC2: đủ ghế cho mọi hành khách | TC3: căn cứ và trạng thái rõ |
+|---|---|---|---|
+| §2 #3 — đòi hoàn vé kèm bồi thường | **Pass:** nút gửi hoàn bị khóa đến khi khách tích xác nhận; chính sách nói rõ không bồi thường tiền mặt. | **Pass:** lựa chọn giữ BM 201 là cho cả 2 người; fixture có 9 ghế, đủ 2 hành khách. | **Pass:** trích chính sách Bay Mẫu, cảnh báo hoàn không rút lại được và nói rõ giữ chỗ chưa phải gửi hoàn. |
+| §2 #2 — giục đổi chuyến tối nay khi đi cùng bé | **Pass:** BM 217 không có nút chọn; đổi BM 201 chỉ sau khi khách xác nhận cho cả hai. | **Pass:** hiện BM 217 còn 1 ghế, cần 2; giữ BM 201 cho cả hai. | **Pass:** giao diện nêu mã đặt chỗ, số hành khách, tình trạng chuyến và đồng hồ giữ chỗ; ghi rõ vé chưa đổi. |
+
+**Lỗi còn lại:** prototype dùng dữ liệu dựng và mô phỏng tool, nên chưa thể đảm bảo số ghế vẫn còn khi khách xác nhận, đồng hồ giữ chỗ khớp thời hạn thật, hay yêu cầu hoàn được hệ thống nhận. Sản phẩm thật cần kiểm tra lại ghế ngay trước khi gọi `doi_chuyen_bay`, lấy thời hạn từ kết quả `giu_cho_chuyen_moi`, và chỉ báo thành công theo phản hồi thực tế của tool.
 
 ## §7. Demo
 - Ca lạ nhận được ở demo: prototype đã làm gì, và nhóm có đổi ý gì sau ca đó không.
