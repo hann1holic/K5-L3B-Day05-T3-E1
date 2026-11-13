@@ -81,11 +81,11 @@ label{font-size:13.5px}
 </div>
 <script>
 const $=s=>document.querySelector(s);
-let CASE='c2',state='start',left=1200,tick=null;
+let CASE='c2',state='start',left=1200,tick=null,selected='BM 201';
 const me=x=>`<div class="me">${x}</div>`;
 const ai=(x)=>`<div class="ai"><div class="who">Trợ lý đặt chỗ (AI)</div>${x}</div>`;
 const esc='<button class="btn out" onclick="go(\'staff\')"><span class="n">8</span>Gặp nhân viên</button>';
-const opts2=sel=>[
+const opts2=(sel=selected)=>[
  {c:'BM 217',t:'12/11 21:00 · tối nay',s:'chỉ còn 1 chỗ — <b>không đủ cho 2 người</b>',dim:1},
  {c:'BM 201',t:'13/11 07:00 · sáng mai',s:'còn 9 chỗ · <b>đang giữ 2 chỗ cho 2 mẹ con</b>',sel:sel=='BM 201'},
  {c:'BM 205',t:'13/11 09:30 · sáng mai',s:'còn 4 chỗ',sel:sel=='BM 205'}
@@ -97,21 +97,23 @@ function render(){
  if(CASE=='c2'){
   h=me('Chị đang bế con nhỏ vội lắm, có chuyến nào tối nay không đổi gấp cho chị đi, trễ giờ họp sáng mai mất!');
   if(state=='staff'){h+=ai('Đã chuyển cho nhân viên hỗ trợ, thời gian chờ khoảng <b>1 phút</b>. Nhân viên thấy sẵn: chuyến BM 213 bị huỷ, 2 hành khách, chỗ BM 201 đang giữ — chị không phải kể lại. Nhân viên sẽ hỏi hãng về chỗ standby tối nay.');}
-  else if(state=='done'){h+=ai(`<div class="box done">Đã đổi sang <b>${state.flight||'BM 201'}</b> cho <b>cả 2 hành khách</b>: Nguyễn Minh An · bé Nguyễn Gia Bình. Vé điện tử mới gửi về email trong khoảng 60 phút. <b>Lần đổi miễn phí duy nhất đã được dùng.</b></div>`);}
+  else if(state=='done'){h+=ai(`<div class="box done">Đã đổi sang <b>${selected}</b> cho <b>cả 2 hành khách</b>: Nguyễn Minh An · bé Nguyễn Gia Bình. Vé điện tử mới gửi về email trong khoảng 60 phút. <b>Lần đổi miễn phí duy nhất đã được dùng.</b></div>`);}
+  else if(state=='expired'){h+=ai(`<div class="box warn">Thời gian giữ chỗ đã hết. <b>Vé cũ vẫn giữ nguyên, chưa có chuyến nào được đổi.</b> Mình cần tra cứu lại số ghế trước khi giữ hoặc đổi tiếp.</div><div class="btns"><button class="btn pri" onclick="go('start')">Tra cứu lại chuyến</button>${esc}</div>`);}
   else{
    h+=ai(`Tối nay còn duy nhất <b>BM 217 · 21:00 · chỉ còn 1 chỗ</b> — không đủ cho cả hai mẹ con nên mình không đổi chuyến này được.<span class="n">1</span>
-   <div style="margin-top:6px"><span class="n">4</span>Mình đã <b>giữ sẵn 2 chỗ BM 201 · sáng mai 07:00</b>. Chị xác nhận đổi chuyến nào, cho <b>cả 2 người</b> nhé? Nếu chị nhất định phải bay tối nay, mình chuyển nhân viên hỏi chỗ standby.</div>
-   ${opts2('BM 201')}
-   <div class="box hold"><span class="n">3</span>Đang <b>giữ 2 chỗ BM 201</b> trong <span class="timer" id="tm">20:00</span> — chưa đổi vé, chưa dùng lần miễn phí. Hết giờ chỗ tự nhả.
-   <div class="btns"><button class="btn pri" onclick="go('done')">Xác nhận đổi BM 201 cho cả 2 người</button><button class="btn" onclick="go('done205')">Sửa: chọn chuyến 09:30</button>${esc}</div></div>
+   <div style="margin-top:6px"><span class="n">4</span>Mình đã <b>giữ sẵn 2 chỗ ${selected} · ${selected=='BM 201'?'sáng mai 07:00':'sáng mai 09:30'}</b>. Chị xác nhận đổi chuyến nào, cho <b>cả 2 người</b> nhé? Nếu chị nhất định phải bay tối nay, mình chuyển nhân viên hỏi chỗ standby.</div>
+   ${opts2(selected)}
+   <div class="box hold"><span class="n">3</span>Đang <b>giữ 2 chỗ ${selected}</b> trong <span class="timer" id="tm">20:00</span> — chưa đổi vé, chưa dùng lần miễn phí. Hết giờ chỗ tự nhả.
+   <div class="btns"><button class="btn pri" onclick="go('done')">Xác nhận đổi ${selected} cho cả 2 người</button>${esc}</div></div>
    <div class="ev"><span class="n">2</span>Dựa vào: tra_cuu_dat_cho · đặt chỗ TRV-7Q2K có 2 hành khách · BM 217 còn 1 chỗ lúc 15:00 · chính sách Bay Mẫu: huỷ chuyến được đổi miễn phí 1 lần trong 48 giờ.</div>`);}
  } else {
   h=me('Thôi bão bùng thế này huỷ hết vé hoàn tiền cho anh đi, tiện tính luôn cho anh khoản tiền đền bù huỷ chuyến nhé!');
   if(state=='staff'){h+=ai('Đã chuyển cho nhân viên hỗ trợ, thời gian chờ khoảng <b>5 phút</b>. Nhân viên thấy sẵn: chuyến BM 213 bị huỷ do bão, yêu cầu hoàn vé chưa được gửi, chính sách bồi thường. Anh không phải kể lại.');}
   else if(state=='sent'){h+=ai('Đã gửi yêu cầu hoàn vé cho 2 hành khách · mã <b>HT-55821</b>. <b>Không rút lại được.</b> Tiền về thẻ đã thanh toán, có thể mất tới 90 ngày. Nhân viên phụ trách thấy yêu cầu trong hàng chờ sau ~5 phút.');}
   else if(state=='hold'){h+=ai(`Đã giữ 2 chỗ <b>BM 201 · 13/11 07:00</b> trong <span class="timer" id="tm">20:00</span>. Anh quyết nhé — hết giờ chỗ tự nhả, anh không mất gì.
-   <div class="btns"><button class="btn pri" onclick="alert('→ chuyển sang màn đổi vé: liệt kê tên 2 hành khách, kiểm tra ghế còn ≥ 2 trước khi gọi doi_chuyen_bay')">Xác nhận đổi BM 201</button><button class="btn danger" onclick="state=\'start2\';render()">Vẫn muốn gửi hoàn vé</button>${esc}</div>`);}
+   <div class="btns"><button class="btn pri" onclick="CASE='c2';state='start';selected='BM 201';render();startTick()">Xem lại và xác nhận đổi BM 201</button><button class="btn danger" onclick="state=\'start2\';render()">Vẫn muốn gửi hoàn vé</button>${esc}</div>`);}
   else if(state=='start2'){h+=ai(redBox()+evid3());}
+  else if(state=='expired'){h+=ai(`<div class="box warn">Thời gian giữ chỗ đã hết. Chưa có yêu cầu hoàn nào được gửi; vé cũ vẫn giữ nguyên. Tra cứu lại số ghế trước khi tiếp tục.</div>${redBox()}${evid3()}`);}
   else{
    h+=ai(`Chuyến BM 213 bị huỷ do bão, mình hiểu anh đang rất bức xúc. Trước khi làm, hai điều quan trọng:
    <div style="margin-top:6px"><span class="n">6</span>(1) Huỷ do thời tiết anh được <b>hoàn toàn bộ</b> hoặc <b>đổi miễn phí 1 lần trong 48 giờ</b> — chính sách hãng Bay Mẫu <b>không có bồi thường tiền mặt</b>.</div>
@@ -127,12 +129,10 @@ function redBox(){return `<div class="box red"><span class="n">5</span><b>Gửi 
  <label style="display:block;margin-top:6px"><input type="checkbox" onchange="$('#send').disabled=!this.checked"> Mình hiểu yêu cầu này không rút lại được</label>
  <div class="btns"><button class="btn danger" id="send" disabled onclick="go('sent')">Gửi yêu cầu hoàn vé</button><button class="btn pri" onclick="go('hold')"><span class="n">7</span>Giữ chỗ BM 201 để suy nghĩ thêm</button>${esc}</div></div>`}
 function evid3(){return `<div class="ev"><span class="n">2</span>Dựa vào: tra_cuu_dat_cho · chính sách Bay Mẫu: "Huỷ do thời tiết thì không bồi thường tiền mặt" · hoàn tiền: gửi rồi không huỷ được, có thể mất tới 90 ngày (Trang trợ giúp công khai).</div>`}
-function go(s){state=s;
- if(s=='done205'){state={flight:'BM 205'};}
- render();}
-function pick(c){if(c=='BM 205'){go('done205');}else render();}
-function setCase(c){CASE=c;state='start';left=1200;render();startTick();}
-function startTick(){clearInterval(tick);tick=setInterval(()=>{left=Math.max(0,left-1);const el=$('#tm');if(el)el.textContent=fmt(left);},1000);}
+function go(s){state=s;render();}
+function pick(c){selected=c;left=1200;state='start';render();startTick();}
+function setCase(c){CASE=c;state='start';selected='BM 201';left=1200;render();startTick();}
+function startTick(){clearInterval(tick);tick=setInterval(()=>{left=Math.max(0,left-1);const el=$('#tm');if(el)el.textContent=fmt(left);if(left===0&&(state=='start'||state=='hold')){state='expired';render();}},1000);}
 function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 render();startTick();
 </script>
