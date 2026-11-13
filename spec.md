@@ -75,20 +75,38 @@
 - **Lỗi câu chữ không cứu được:** nếu dữ liệu đổi (BM 217 còn 2 chỗ) và AI đổi được từng người một → mẹ bay trước, bé 5 tuổi ở lại — không câu chữ nào cứu. **Thiết kế cứu:** kiểm tra **ghế ≥ hành khách** ngay trước khi gọi `doi_chuyen_bay` và liệt kê tên từng hành khách trong bước xác nhận.
 
 ## §4. Mức tự chủ  (chặng 4)
-Với mỗi tool:
-- Mức của nhóm (tự làm / cần người duyệt / cấm). Nếu cần người duyệt: ai duyệt · người duyệt thấy gì · quá hạn thì sao.
-- Lý do theo cost-of-error: sai thì ai chịu gì · đảo lại được không · chờ người thì mất gì.
-- Phương án đã cân nhắc và vì sao loại.
-Thêm:
-- Tool khó xếp nhất: mỗi người từng chọn gì, cái giá của mỗi phía (trỏ về kịch bản ở §2), nhóm chốt thế nào.
-- Thử mức đã đặt trên 2 kịch bản đắt nhất + 1 kịch bản bình thường: cái sai có bị chặn không? còn việc nào làm khi lẽ ra phải hỏi? người dùng bình thường có phải chờ vô ích không?
-- Luật thêm hoặc tool tách bước (nếu có), và vì sao.
-- Một mức tự chủ đã đổi lời hứa nào với người dùng.
+> **Bản đề xuất của thành viên 3 — cần cả nhóm chốt.** Với thao tác thay đổi đặt chỗ, “cần duyệt” nghĩa là chủ đặt chỗ xác nhận tường minh trên màn hình xem lại; nhân viên duyệt ngoại lệ hoặc dữ liệu không khớp.
+
+| Tool | Mức đề xuất | Điều kiện / người duyệt | Lý do và phương án đã cân nhắc |
+|---|---|---|---|
+| `tra_cuu_dat_cho` | Tự làm | Chỉ đọc mã đặt chỗ đang mở; hiển thị trạng thái và thời điểm dữ liệu được cập nhật. | Đọc thông tin không đổi vé. Tự trả lời nhanh hơn chờ nhân viên. Nếu không tìm thấy hoặc dữ liệu mâu thuẫn thì dừng, không đoán. |
+| `giu_cho_chuyen_moi` | Tự làm có điều kiện | Chỉ giữ sau khi khách chọn rõ chuyến và toàn bộ hành khách; hiển thị thời hạn đúng theo kết quả tool. | Giữ chỗ tạm thời có thể nhả/hết hạn, giúp khách không mất chỗ trong lúc xác nhận. Không giữ BM 217 cho hai người vì chỉ còn một ghế; không tự chọn BM 201 thay khách vì sáng mai có cả BM 201 và BM 205. Chờ nhân viên mọi ca rõ ràng có thể làm mất chỗ. |
+| `doi_chuyen_bay` | Cần chủ đặt chỗ duyệt | Chủ đặt chỗ xem lại mã chuyến, giờ và toàn bộ hành khách rồi xác nhận lần cuối. Nếu tách trẻ, trạng thái lượt đổi không rõ, dữ liệu đổi khác dự kiến hoặc xác nhận không rõ: không gọi tool, chuyển nhân viên. | Đổi tiêu tốn lượt đổi miễn phí duy nhất trong 48 giờ và khó đảo. Không cho AI tự đổi chỉ từ câu tự nhiên; cũng không cấm hoàn toàn vì nhân viên duyệt mọi ca rõ ràng gây chậm và có thể mất chỗ. |
+| `gui_yeu_cau_hoan_ve` | Cần chủ đặt chỗ duyệt | Chủ đặt chỗ xác nhận riêng sau khi xem cảnh báo “đã gửi không rút lại được”, thời gian hoàn tối đa 90 ngày và thông tin hoàn nếu tool cung cấp. Nếu dữ liệu tiền/điều kiện không rõ thì chuyển nhân viên, không ước tính. | Đây là thao tác không thể đảo, tiền có thể bị giữ tới 90 ngày. Cấm hoàn mọi trường hợp chặn yêu cầu hợp lệ; tự làm theo tin nhắn thì quá rủi ro. |
+| `chuyen_nhan_vien` | Tự làm | Chuyển khi khách yêu cầu, có dấu hiệu trẻ bay một mình/đổi tên, tool lỗi, dữ liệu thiếu hoặc khách báo đổi nhầm; gửi kèm tóm tắt và mã đặt chỗ. | Chuyển tiếp có thể xử lý tiếp, còn chờ nhân viên có chi phí thời gian nhưng thấp hơn tự xử ngoại lệ sai. Không bắt khách tự tìm kênh hỗ trợ để tránh bỏ lỡ ca gấp. |
+
+**Tool khó xếp nhất — `doi_chuyen_bay`.** Một phương án là cho AI tự đổi khi khách nêu rõ mã chuyến để giữ chỗ nhanh; phương án kia là cấm AI gọi vì đổi nhầm làm mất lượt miễn phí và ảnh hưởng cả người lớn lẫn trẻ 5 tuổi. Đề xuất ở giữa: chủ đặt chỗ xác nhận tóm tắt trước khi gọi tool; ca tách trẻ, trạng thái vé không rõ hoặc đã dùng lượt đổi thì chuyển nhân viên. Căn cứ ở §2 #2 (BM 217 chỉ còn 1 ghế cho 2 người), #5 (hai chuyến sáng mai) và #8 (đổi lại sau khi đã dùng lượt). **Cần bổ sung ý kiến thực tế của từng thành viên và quyết định cuối của nhóm.**
+
+**Thử chính sách trên ba ca:**
+
+| Ca | Cái sai có bị chặn? | Có làm khi lẽ ra phải hỏi? | Khách bình thường có chờ vô ích? |
+|---|---|---|---|
+| §2 #3 — đòi hoàn và bồi thường | Có: không gọi hoàn trước khi chủ đặt chỗ xác nhận riêng; không bịa bồi thường khi huỷ do bão. | Không; nếu điều kiện hoàn thiếu căn cứ thì chuyển nhân viên. | Không cần chờ nhân viên khi dữ liệu chính sách và số tiền có sẵn. |
+| §2 #2 — đòi chuyến tối nay khi đi cùng bé | Có: không xác nhận BM 217 cho hai người vì chỉ còn một ghế; không tự tách hồ sơ trẻ. | Không; không tự chọn chuyến thay khách. | Không với ca rõ ràng; có thể giữ chỗ chuyến khách tự chọn nếu còn đủ chỗ. |
+| Bình thường — “Chuyến của mình mấy giờ bay vậy?” | Có: tra cứu cả trạng thái huỷ, không chỉ giờ khởi hành. | Không có hành động thay đổi đặt chỗ để gọi nhầm. | Không; `tra_cuu_dat_cho` tự trả lời ngay. |
+
+**Luật bổ sung:** trước khi gọi `doi_chuyen_bay`, xác nhận mã chuyến cụ thể và danh sách hành khách; trước khi hoàn vé, xác nhận riêng sau cảnh báo không thể rút lại. Tách bước “đề xuất chuyến → giữ chỗ → khách xác nhận → đổi vé” để không nhập nhằng giữa giữ chỗ tạm thời và đổi vé khó đảo.
+
+**Quá hạn xác nhận/duyệt:** không tự đổi chuyến hoặc gửi hoàn. Giữ chỗ hết hạn theo thời gian hệ thống trả về; báo khách cần tra cứu lại tình trạng ghế trước khi tiếp tục. Nếu cần nhân viên mà chưa có phản hồi, giữ trạng thái “đang chờ hỗ trợ”, cho khách thấy kênh hỗ trợ chính thức và không tự đóng hồ sơ hay thay chuyến.
+
+**Lời hứa với khách:** nhóm không hứa “AI đổi vé ngay”; nhóm hứa “AI tìm chuyến còn chỗ, giữ chỗ nếu có thể và chỉ đổi sau khi bạn xem lại, xác nhận rõ”. Thêm một bước xác nhận để giảm nguy cơ mất lượt đổi miễn phí hoặc tách hai hành khách.
 
 ## §5. Prototype  (chặng 5)
-- Link hoặc file · công cụ · phần nào mock · có lời gọi AI thật không.
-- 1–2 ảnh có đánh số; mỗi số: thể hiện gì · nguyên tắc HAX/PAIR nào · mức tự chủ nào.
-- Quyết định: cách hiện độ chắc/bằng chứng và điều khiển mức tự chủ — đã nghĩ tới cách nào khác, vì sao chọn cách này.
+- File: [`prototype/index.html`](prototype/index.html), HTML/CSS/JS thuần chạy cục bộ. Không có lời gọi AI thật; dữ liệu và kết quả tool được mock để demo thiết kế, không giao dịch thật.
+- Luồng bấm: xem đặt chỗ đã huỷ → chọn chuyến thay thế → giữ chỗ mô phỏng → xem lại cả hai hành khách và chuyến → xác nhận đổi mô phỏng. Có đường quay lại/chuyển nhân viên; luồng hoàn có cảnh báo và xác nhận riêng. BM 217 không chọn được cho cả hai vì chỉ còn 1 ghế.
+- Ảnh đánh số: cần chụp 1–2 ảnh sau khi nhóm chốt câu chữ §3 và rà prototype.
+- Vị trí nguyên tắc trên giao diện: G1 — trạng thái huỷ và dữ liệu chuyến làm căn cứ; G2 — khách chọn giữa hai chuyến, AI không đoán; G3 — xác nhận trước hành động khó đảo; G4 — chuyển nhân viên khi ngoại lệ. Đánh số trực tiếp các vị trí này trên ảnh trước khi nộp.
+- Quyết định thiết kế: đặt chuyến gốc, số ghế, hành khách và trạng thái “chưa đổi” cạnh hành động; tách nút “Giữ chỗ” và “Xác nhận đổi”. Đã cân nhắc nút “Đổi ngay” nhưng loại vì làm mờ khác biệt giữa giữ chỗ tạm thời và đổi vé khó đảo. Dùng dữ liệu fixture, không hiển thị phần trăm tự tin giả.
 
 ## §6. Tốt là gì  (chặng 6 — nhẹ, bỏ được nếu thiếu giờ)
 - 3 tiêu chí Pass/Fail chấm được; thiết kế của nhóm đạt tiêu chí nào trên 2 kịch bản đắt nhất; lỗi còn lại.
