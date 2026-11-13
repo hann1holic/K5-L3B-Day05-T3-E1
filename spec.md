@@ -2,9 +2,9 @@
 
 | Họ và Tên | Mã Học Viên | Việc đã làm |
 |---|---|---|
-| [Điền thành viên 1] | [Điền mã] | [Ghi phần thực tế đã làm] |
-| [Điền thành viên 2] | [Điền mã] | [Ghi phần thực tế đã làm] |
-| [Điền thành viên 3] | [Điền mã] | [Ghi phần thực tế đã làm] |
+| Nguyễn Tấn Dũng | 2A202603734 | Phần 2: UX khi AI sai (§3) |
+| Nguyễn Duy Anh | 2A202603796 | Phần 1: phạm vi và kịch bản rủi ro (§1–§2); dựng prototype (§5) |
+| Lê Huy Anh | 2A202603786 | Phần 3: mức tự chủ của các tool (§4) |
 
 ## §1. Lát cắt & phạm vi
 - Lát cắt: Trong **Đặt chỗ của tôi**, khi **hành khách** vừa nhận tin chuyến bay bị huỷ và nhắn hỏi, **AI đề xuất và giữ chỗ chuyến thay thế, hỏi lại cho rõ, đổi vé, hay chuyển nhân viên**, để khách tới nơi kịp mà không mất vé hay tiền vì một thao tác không đảo lại được.
