@@ -105,7 +105,7 @@
 - `prototype/index.html` (HTML/CSS/JS thuần, chạy trực tiếp trên trình duyệt không cần cài đặt).
 - Toàn bộ dữ liệu đặt chỗ `TRV-7Q2K` (2 hành khách: Nguyễn Minh An 34t, Nguyễn Gia Bình 5 tuổi; chuyến gốc `BM 213` huỷ do bão; danh sách 3 chuyến thay thế) và luồng hội thoại được dựng từ bộ fixture của Track T3. Không sử dụng lời gọi AI thật (chỉ thiết kế).
 
-+ ảnh `prototype/screen-1.png` & `prototype/screen-2.png`: 
++ ảnh `prototype/image.png` & `prototype/image2.png`: 
     - Số [1] — HAX G2 (Làm rõ hệ thống làm tốt đến đâu / giới hạn): Hộp cảnh báo vàng nêu rõ lý do không thể đáp ứng yêu cầu gốc (chuyến `BM 217` lúc 21:00 chỉ còn 1 ghế không đủ cho 2 mẹ con; hoặc huỷ do bão nên không có bồi thường tiền mặt) thay vì để AI đoán bừa.
     - Số [2] — HAX G11 + PAIR Explainability (Giải thích căn cứ): Khung "Căn cứ dữ liệu" bên dưới mỗi phản hồi trích dẫn trực tiếp nguồn từ `tra_cuu_dat_cho` (mã `TRV-7Q2K`, lý do huỷ do bão, chính sách đổi 1 lần miễn phí trong 48h) để hành khách tự kiểm chứng.
     - Số [3] — HAX G10 (Thu hẹp phạm vi khi nghi ngờ) & Mức tự chủ `Cần duyệt`: Khoá cứng việc gọi `doi_chuyen_bay` (mất lượt miễn phí duy nhất) và `gui_yeu_cau_hoan_ve` (không thể rút lại); yêu cầu người dùng bấm nút 'Xác nhận đổi' hoặc tích vào ô cam kết hiểu rõ hậu quả hoàn vé mới mở khoá nút gửi (áp dụng cho cả Ca 2 lẫn nút rẽ nhánh 'Không phù hợp · Hoàn vé' ở Ca 1).
