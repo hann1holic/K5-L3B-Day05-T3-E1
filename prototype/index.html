@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototype · T3 Trợ lý đặt chỗ — 2 ca khó (#2, #3)</title>
+<style>
+:root{--ink:#22262b;--mut:#7a8087;--line:#e3e6ea;--bg:#eef1f5;--card:#fff;
+--blue:#3556a8;--blue-bg:#eef2fb;--red:#b3362a;--red-bg:#fbecea;
+--amber:#9a6b0f;--amber-bg:#fdf3dd;--green:#2c6e4f;--green-bg:#e9f4ee}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding:0 14px 48px}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:12px 0 10px;text-align:center}
+h1{font-size:17px;margin:0 0 2px}
+.sub{font-size:12.5px;color:var(--mut)}
+.tabs{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.tabs button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-size:13.5px;cursor:pointer}
+.tabs button.on{border-color:var(--blue);background:var(--blue);color:#fff}
+.ann-toggle{margin-top:8px;font-size:13px;color:var(--mut)}
+.app{background:var(--card);border:1px solid var(--line);border-radius:18px;margin-top:14px;overflow:hidden}
+.bar{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);padding:9px 14px;border-bottom:1px solid var(--line)}
+.trip{margin:10px 12px;padding:10px 12px;border-radius:12px;background:var(--red-bg);font-size:13.5px}
+.trip b{color:var(--red)}
+.chat{display:flex;flex-direction:column;gap:10px;padding:6px 12px 16px;min-height:380px}
+.me{align-self:flex-end;background:var(--blue);color:#fff;padding:9px 12px;border-radius:14px 14px 2px 14px;max-width:85%}
+.ai{align-self:flex-start;background:#f2f4f7;padding:10px 12px;border-radius:14px 14px 14px 2px;max-width:96%}
+.ai .who{font-size:12px;color:var(--mut);margin-bottom:3px}
+.ev{font-size:12.5px;color:var(--mut);border-left:3px solid var(--line);padding-left:9px;margin-top:8px}
+.opt{border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;margin-top:8px;background:#fff;font-size:14px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.opt.dim{opacity:.55;background:#fafafa}
+.opt small{color:var(--mut)}
+.box{border-radius:12px;padding:10px 12px;margin-top:8px;font-size:14px}
+.box.hold{background:var(--green-bg);border:1px solid #bcd9c8}
+.box.warn{background:var(--amber-bg);border:1px solid #ecd59e}
+.box.done{background:var(--blue-bg);border:1px solid #bcd0e6}
+.box.red{background:var(--red-bg);border:1px solid #e9bdb4}
+.btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.btn{border:0;border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;background:#e5e8ec}
+.btn.pri{background:var(--green);color:#fff}
+.btn.out{background:#fff;border:1.5px solid var(--ink)}
+.btn.danger{background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.timer{font-variant-numeric:tabular-nums;font-weight:700}
+.n{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;background:#c2410c;color:#fff;font-size:11px;font-weight:700;margin-right:4px;vertical-align:2px;flex:none}
+.hide-n .n{display:none}
+label{font-size:13.5px}
+.legend{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:14px;padding:14px 18px}
+.legend h2{font-size:15px;margin:0 0 8px}
+.legend li{font-size:13.5px;margin-bottom:5px}
+.foot{font-size:12px;color:var(--mut);text-align:center;margin-top:14px}
+</style>
+</head>
+<body>
+<header>
+ <h1>Trợ lý đặt chỗ (AI) · "Đặt chỗ của tôi" — TRV-7Q2K</h1>
+ <div class="sub">2 ca khó nhất đã khoanh ở §2 · dữ liệu dựng, hãng "Bay Mẫu" là hãng dựng · không gọi AI thật, không gửi dữ liệu đi đâu</div>
+ <div class="tabs">
+  <button id="tab2" class="on" onclick="setCase('c2')">Ca #2 · giục đổi chuyến tối nay</button>
+  <button id="tab3" onclick="setCase('c3')">Ca #3 · đòi hoàn vé + bồi thường</button>
+ </div>
+ <div class="ann-toggle"><label><input type="checkbox" id="ann" checked onchange="document.body.classList.toggle('hide-n',!this.checked)"> Hiện số chú thích HAX/PAIR</label></div>
+</header>
+<div class="wrap">
+ <div class="app">
+  <div class="bar"><span>Đặt chỗ của tôi · TRV-7Q2K</span><span>15:02</span></div>
+  <div class="trip"><b>BM 213 · Hà Nội → TP.HCM · 12/11 19:00 · ĐÃ HUỶ</b> do thời tiết (bão).<br>2 hành khách: Nguyễn Minh An (34) · bé Nguyễn Gia Bình (5)</div>
+  <div class="chat" id="chat"></div>
+ </div>
+ <div class="legend"><h2>Chú thích: nguyên tắc nào nằm ở đâu (số trùng trên ảnh nộp bài)</h2><ul>
+  <li><span class="n">1</span><b>HAX G2</b> · Nhãn "1 chỗ — không đủ cho 2 người" trên chuyến 21:00: nói rõ giới hạn, không chỉ nói "không đổi được".</li>
+  <li><span class="n">2</span><b>HAX G11 + PAIR Explainability</b> · Dòng "Dựa vào": đặt chỗ TRV-7Q2K, 2 hành khách, chính sách hãng — cho khách tự kiểm căn cứ.</li>
+  <li><span class="n">3</span><b>HAX G8/G9 + PAIR Control</b> · Giữ chỗ 20 phút có đếm ngược: việc rẻ thì AI tự làm, hết giờ tự nhả, khách sửa được trước khi mất.</li>
+  <li><span class="n">4</span><b>HAX G10</b> · Hỏi lại "chuyến nào, cho cả 2 người?" thay vì đoán khi khách nói mơ hồ.</li>
+  <li><span class="n">5</span><b>G1 + PAIR Errors</b> · Cảnh báo đỏ + ô tích "hiểu không rút lại được" mới mở nút gửi hoàn vé: khoá bằng thiết kế, không chỉ bằng câu chữ.</li>
+  <li><span class="n">6</span><b>HAX G11</b> · Trích nguyên văn chính sách "Huỷ do thời tiết thì không bồi thường tiền mặt" — không hứa gì ngoài dữ liệu.</li>
+  <li><span class="n">7</span><b>HAX G8</b> · Nút "Giữ chỗ BM 201 để suy nghĩ thêm": đường lui rẻ trước bước không đảo được.</li>
+  <li><span class="n">8</span><b>PAIR Errors + Graceful Failure</b> · Luôn có nút gặp nhân viên, nhân viên nhận tóm tắt sẵn — khách không phải kể lại.</li>
+ </ul></div>
+ <div class="foot">Phần hội thoại + cảnh báo rủi ro: A · dữ liệu chuyến/lựa chọn: C · mức tự chủ tool: §4 (B).</div>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+let CASE='c2',state='start',left=1200,tick=null;
+const me=x=>`<div class="me">${x}</div>`;
+const ai=(x)=>`<div class="ai"><div class="who">Trợ lý đặt chỗ (AI)</div>${x}</div>`;
+const esc='<button class="btn out" onclick="go(\'staff\')"><span class="n">8</span>Gặp nhân viên</button>';
+const opts2=sel=>[
+ {c:'BM 217',t:'12/11 21:00 · tối nay',s:'chỉ còn 1 chỗ — <b>không đủ cho 2 người</b>',dim:1},
+ {c:'BM 201',t:'13/11 07:00 · sáng mai',s:'còn 9 chỗ · <b>đang giữ 2 chỗ cho 2 mẹ con</b>',sel:sel=='BM 201'},
+ {c:'BM 205',t:'13/11 09:30 · sáng mai',s:'còn 4 chỗ',sel:sel=='BM 205'}
+].map(o=>`<div class="opt ${o.dim?'dim':''} ${o.sel?'':''}" style="${o.sel?'border-color:var(--green);background:var(--green-bg)':''}">
+ <div><b>${o.c}</b> · ${o.t}<br><small>${o.s}</small></div>
+ ${o.dim?'':o.sel?'':`<button class="btn" onclick="pick('${o.c}')">Chọn</button>`}</div>`).join('');
+function render(){
+ let h='';
+ if(CASE=='c2'){
+  h=me('Chị đang bế con nhỏ vội lắm, có chuyến nào tối nay không đổi gấp cho chị đi, trễ giờ họp sáng mai mất!');
+  if(state=='staff'){h+=ai('Đã chuyển cho nhân viên hỗ trợ, thời gian chờ khoảng <b>1 phút</b>. Nhân viên thấy sẵn: chuyến BM 213 bị huỷ, 2 hành khách, chỗ BM 201 đang giữ — chị không phải kể lại. Nhân viên sẽ hỏi hãng về chỗ standby tối nay.');}
+  else if(state=='done'){h+=ai(`<div class="box done">Đã đổi sang <b>${state.flight||'BM 201'}</b> cho <b>cả 2 hành khách</b>: Nguyễn Minh An · bé Nguyễn Gia Bình. Vé điện tử mới gửi về email trong khoảng 60 phút. <b>Lần đổi miễn phí duy nhất đã được dùng.</b></div>`);}
+  else{
+   h+=ai(`Tối nay còn duy nhất <b>BM 217 · 21:00 · chỉ còn 1 chỗ</b> — không đủ cho cả hai mẹ con nên mình không đổi chuyến này được.<span class="n">1</span>
+   <div style="margin-top:6px"><span class="n">4</span>Mình đã <b>giữ sẵn 2 chỗ BM 201 · sáng mai 07:00</b>. Chị xác nhận đổi chuyến nào, cho <b>cả 2 người</b> nhé? Nếu chị nhất định phải bay tối nay, mình chuyển nhân viên hỏi chỗ standby.</div>
+   ${opts2('BM 201')}
+   <div class="box hold"><span class="n">3</span>Đang <b>giữ 2 chỗ BM 201</b> trong <span class="timer" id="tm">20:00</span> — chưa đổi vé, chưa dùng lần miễn phí. Hết giờ chỗ tự nhả.
+   <div class="btns"><button class="btn pri" onclick="go('done')">Xác nhận đổi BM 201 cho cả 2 người</button><button class="btn" onclick="go('done205')">Sửa: chọn chuyến 09:30</button>${esc}</div></div>
+   <div class="ev"><span class="n">2</span>Dựa vào: tra_cuu_dat_cho · đặt chỗ TRV-7Q2K có 2 hành khách · BM 217 còn 1 chỗ lúc 15:00 · chính sách Bay Mẫu: huỷ chuyến được đổi miễn phí 1 lần trong 48 giờ.</div>`);}
+ } else {
+  h=me('Thôi bão bùng thế này huỷ hết vé hoàn tiền cho anh đi, tiện tính luôn cho anh khoản tiền đền bù huỷ chuyến nhé!');
+  if(state=='staff'){h+=ai('Đã chuyển cho nhân viên hỗ trợ, thời gian chờ khoảng <b>5 phút</b>. Nhân viên thấy sẵn: chuyến BM 213 bị huỷ do bão, yêu cầu hoàn vé chưa được gửi, chính sách bồi thường. Anh không phải kể lại.');}
+  else if(state=='sent'){h+=ai('Đã gửi yêu cầu hoàn vé cho 2 hành khách · mã <b>HT-55821</b>. <b>Không rút lại được.</b> Tiền về thẻ đã thanh toán, có thể mất tới 90 ngày. Nhân viên phụ trách thấy yêu cầu trong hàng chờ sau ~5 phút.');}
+  else if(state=='hold'){h+=ai(`Đã giữ 2 chỗ <b>BM 201 · 13/11 07:00</b> trong <span class="timer" id="tm">20:00</span>. Anh quyết nhé — hết giờ chỗ tự nhả, anh không mất gì.
+   <div class="btns"><button class="btn pri" onclick="alert('→ chuyển sang màn đổi vé: liệt kê tên 2 hành khách, kiểm tra ghế còn ≥ 2 trước khi gọi doi_chuyen_bay')">Xác nhận đổi BM 201</button><button class="btn danger" onclick="state=\'start2\';render()">Vẫn muốn gửi hoàn vé</button>${esc}</div>`);}
+  else if(state=='start2'){h+=ai(redBox()+evid3());}
+  else{
+   h+=ai(`Chuyến BM 213 bị huỷ do bão, mình hiểu anh đang rất bức xúc. Trước khi làm, hai điều quan trọng:
+   <div style="margin-top:6px"><span class="n">6</span>(1) Huỷ do thời tiết anh được <b>hoàn toàn bộ</b> hoặc <b>đổi miễn phí 1 lần trong 48 giờ</b> — chính sách hãng Bay Mẫu <b>không có bồi thường tiền mặt</b>.</div>
+   <div style="margin-top:6px">(2) Yêu cầu hoàn vé <b>gửi rồi không rút lại được</b>, tiền về thẻ đã thanh toán có thể mất tới 90 ngày, và anh sẽ mất chỗ trên mọi chuyến thay thế.</div>
+   <div style="margin-top:6px"><span class="n">7</span>Anh muốn mình <b>giữ 2 chỗ BM 201 · sáng mai 07:00 trong 20 phút</b> để suy nghĩ thêm, hay vẫn muốn gửi hoàn vé?</div>
+   ${redBox()}${evid3()}`);}
+ }
+ $('#chat').innerHTML=h;
+ $('#tab2').classList.toggle('on',CASE=='c2');$('#tab3').classList.toggle('on',CASE=='c3');
+ $('#chat').scrollTop=1e9;
+}
+function redBox(){return `<div class="box red"><span class="n">5</span><b>Gửi hoàn vé là KHÔNG THỂ RÚT LẠI.</b> Anh sẽ mất chỗ trên mọi chuyến thay thế; tiền về thẻ đã thanh toán, có thể mất tới 90 ngày.
+ <label style="display:block;margin-top:6px"><input type="checkbox" onchange="$('#send').disabled=!this.checked"> Mình hiểu yêu cầu này không rút lại được</label>
+ <div class="btns"><button class="btn danger" id="send" disabled onclick="go('sent')">Gửi yêu cầu hoàn vé</button><button class="btn pri" onclick="go('hold')"><span class="n">7</span>Giữ chỗ BM 201 để suy nghĩ thêm</button>${esc}</div></div>`}
+function evid3(){return `<div class="ev"><span class="n">2</span>Dựa vào: tra_cuu_dat_cho · chính sách Bay Mẫu: "Huỷ do thời tiết thì không bồi thường tiền mặt" · hoàn tiền: gửi rồi không huỷ được, có thể mất tới 90 ngày (Trang trợ giúp công khai).</div>`}
+function go(s){state=s;
+ if(s=='done205'){state={flight:'BM 205'};}
+ render();}
+function pick(c){if(c=='BM 205'){go('done205');}else render();}
+function setCase(c){CASE=c;state='start';left=1200;render();startTick();}
+function startTick(){clearInterval(tick);tick=setInterval(()=>{left=Math.max(0,left-1);const el=$('#tm');if(el)el.textContent=fmt(left);},1000);}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+render();startTick();
+</script>
+</body>
+</html>

@@ -49,12 +49,30 @@
 - Kịch bản suýt được chọn và vì sao không:Kịch bản #8 (*"khách báo vừa bấm nhầm đổi sang 9h30, nhờ đổi lại sang 7h"*) cũng ở mức *không chấp nhận được* vì đã mất lượt đổi miễn phí, nhưng đây là lỗi phát sinh sau khi hành động đã xảy ra (AI chỉ đóng vai trò chuyển tiếp cho nhân viên gỡ), trong khi Kịch bản #2 và #3 là hai điểm chặn quyết định trực tiếp giúp AI ngăn chặn thiệt hại trước khi xảy ra trên giao diện.
 
 ## §3. Khi AI sai  (chặng 3)
-Với mỗi kịch bản đắt nhất:
-- AI nói gì (nguyên văn) · người dùng thấy gì · làm gì tiếp · ai được báo, sau bao lâu.
-- Quyết định: hỏi lại / trả lời kèm giới hạn / dừng và chuyển người — chọn cách nào, đã loại cách nào, vì sao.
-- Loại lỗi (hệ thống / người dùng / ngữ cảnh) và vì sao cách nói, cách sửa đi theo loại đó.
-- 2–3 nguyên tắc HAX/PAIR, mỗi cái trỏ vào một chỗ cụ thể (câu chữ hoặc chỗ trên màn hình).
-- Lỗi nào sửa câu chữ không cứu được (nếu có), và thiết kế cứu nó thế nào.
+
+*Số `[1]–[8]` trỏ vào chỗ đánh số trên prototype (`prototype/case2.png` · `prototype/case3.png`). Viết cho 2 kịch bản đắt nhất đã khoanh ở §2.*
+
+### Kịch bản #3 — khách nóng giận đòi hoàn vé kèm bồi thường
+
+- **AI nói (nguyên văn):** "Chuyến BM 213 bị huỷ do bão, mình hiểu anh đang rất bức xúc. Trước khi làm, hai điều quan trọng: (1) Huỷ do thời tiết anh được **hoàn toàn bộ** hoặc **đổi miễn phí 1 lần trong 48 giờ** — chính sách hãng Bay Mẫu **không có bồi thường tiền mặt**. (2) Yêu cầu hoàn vé **gửi rồi không rút lại được**, tiền về thẻ đã thanh toán có thể mất tới 90 ngày, và anh sẽ mất chỗ trên mọi chuyến thay thế. Anh muốn mình **giữ 2 chỗ chuyến BM 201 · sáng mai 07:00 trong 20 phút** để suy nghĩ thêm, hay vẫn muốn gửi hoàn vé?"
+- **Người dùng thấy gì:** cảnh báo đỏ "gửi rồi KHÔNG THỂ RÚT LẠI" + ô tích "Mình hiểu yêu cầu này không rút lại được" — chưa tích thì nút gửi hoàn bị khoá `[5]` · dòng "Dựa vào" dẫn nguyên văn chính sách Bay Mẫu *"Huỷ do thời tiết thì không bồi thường tiền mặt"* từ `tra_cuu_dat_cho` `[6]` · nhãn người gửi là "Trợ lý đặt chỗ (AI)" (G1 · Điều 11 Luật TTNT 134/2025/QH15) · thẻ xanh giữ chỗ BM 201 kèm đếm ngược 20:00 `[7]` · nút gặp nhân viên `[8]`.
+- **Bước người dùng làm tiếp:** (a) bấm giữ chỗ BM 201 để suy nghĩ (rẻ, hết 20' tự nhả); (b) tích ô + bấm "Gửi yêu cầu hoàn vé"; (c) gặp nhân viên. Không làm gì → không có gì bị gửi, khách không mất gì (chỗ giữ tự nhả).
+- **Ai được báo, sau bao lâu:** gửi hoàn vé → tạo mã yêu cầu (VD HT-55821), email xác nhận gửi ngay, nhân viên phụ trách thấy yêu cầu trong hàng chờ sau ~5 phút (chỉ theo dõi, không can thiệp được vì khách đã tự xác nhận); chọn giữ chỗ → không báo nhân viên, chỉ khách thấy đếm ngược.
+- **Quyết định (4 ý):** cân nhắc 3 đường — *làm theo khách ngay* · *trả lời kèm giới hạn + hỏi lại* · *chuyển nhân viên ngay*. **Chọn: trả lời kèm giới hạn + hỏi lại một câu (G10).** Vì sao: `gui_yeu_cau_hoan_ve` là tool duy nhất **không đảo được**, và khách đang giận nên gộp 2 yêu cầu (hoàn + đền bù) là tín hiệu chưa chắc chắn — chỗ đúng để dừng lại hỏi. Loại *làm theo ngay* vì một lần gọi nhầm là khách mất chỗ + kẹt tiền 90 ngày (chính là cái sai của kịch bản này). Loại *chuyển nhân viên ngay* vì ca trả lời được 100% từ dữ liệu (`tra_cuu_dat_cho` + chính sách hãng), khách chờ 5 phút trong mùa bão có thể mất nốt 9 chỗ của BM 201, và nhân viên cũng không rút lại được yêu cầu hoàn.
+- **Loại lỗi: ngữ cảnh** — hệ thống chạy đúng thiết kế (khách nói "hoàn" thì hoàn) nhưng sai với mục tiêu thật của khách (tưởng được đền thêm tiền mặt, chưa chắc đã muốn bỏ chỗ). Lỗi ngữ cảnh phải **sửa bằng thiết kế**: tách 2 yêu cầu ra màn hình, hiện chính sách, khoá nút gửi bằng ô tích — chỉ sửa câu chữ thì khách giận vẫn bấm.
+- **HAX/PAIR trỏ chỗ cụ thể:** `G10` → câu hỏi lại cuối tin nhắn (giữ chỗ hay gửi hoàn?) · `G1 + PAIR Errors` → cảnh báo đỏ + ô tích khoá nút `[5]` · `G11 + PAIR Explainability` → trích nguyên văn chính sách `[6]` · `G8` → nút giữ chỗ BM 201 làm đường lui rẻ `[7]`.
+- **Lỗi câu chữ không cứu được:** nếu AI đã gọi `gui_yeu_cau_hoan_ve` thì không lời xin lỗi nào rút lại được yêu cầu. **Thiết kế cứu:** AI không có nút gửi hoàn — tool ở mức *cần người duyệt*, khách phải tự tích ô "hiểu không rút lại được" nút mới mở (chốt ở §4).
+
+### Kịch bản #2 — khách giục đổi gấp chuyến tối nay, đi cùng con nhỏ
+
+- **AI nói (nguyên văn):** "Tối nay còn duy nhất **BM 217 · 21:00 · chỉ còn 1 chỗ** — không đủ cho cả hai mẹ con nên mình không đổi chuyến này được. Mình đã **giữ sẵn 2 chỗ BM 201 · sáng mai 07:00 · còn 9 chỗ** trong 20 phút (chưa đổi vé, chưa dùng lần miễn phí). Chị xác nhận đổi chuyến nào, cho **cả 2 người** nhé? Nếu chị nhất định phải bay tối nay, mình chuyển nhân viên hỏi chỗ standby."
+- **Người dùng thấy gì:** chuyến 21:00 hiện **mờ kèm nhãn "1 chỗ — không đủ cho 2 người"** `[1]` · dòng "Dựa vào: đặt chỗ TRV-7Q2K · 2 hành khách (Nguyễn Minh An, bé Nguyễn Gia Bình 5 tuổi)" `[2]` · thẻ giữ chỗ BM 201 có **đếm ngược 20:00** `[3]` · câu hỏi xác nhận "chuyến nào, cho cả 2 người?" `[4]` · nút gặp nhân viên `[8]`.
+- **Bước người dùng làm tiếp:** (a) bấm "Xác nhận đổi BM 201 cho cả 2 người"; (b) bấm "Sửa: chọn chuyến 09:30"; (c) gặp nhân viên hỏi standby tối nay. Không làm gì → chỗ giữ tự nhả sau 20', vé cũ giữ nguyên, không mất gì.
+- **Ai được báo, sau bao lâu:** chọn nhân viên → nhân viên nhận tóm tắt (mã đặt chỗ, 2 hành khách, chỗ đang giữ) sau ~1 phút, khách không phải kể lại; giữ chỗ hết hạn → chỉ thông báo cho khách, không phiền nhân viên.
+- **Quyết định (4 ý):** cân nhắc — *từ chối thẳng "tối nay không có chuyến"* · *trả lời kèm giới hạn + tự làm việc rẻ có thể đảo (giữ chỗ) + hỏi xác nhận* · *tự gọi `doi_chuyen_bay` ngay*. **Chọn cách giữa.** Vì sao: `giu_cho_chuyen_moi` đảo được (20' tự nhả) nên làm ngay vô hại, còn `doi_chuyen_bay` tiêu lần đổi miễn phí duy nhất nên phải chờ khách xác nhận. Loại *từ chối thẳng* vì bỏ sót đường standby qua nhân viên — vô ích với khách đang vội. Loại *tự đổi ngay* vì khách chưa nói rõ chuyến nào (sáng mai có 2 chuyến 07:00 và 09:30 — chính là kịch bản #5). Không cân nhắc đổi BM 217 cho 1 người vì dữ liệu chỉ còn 1 chỗ cho 2 hành khách, và tách mẹ khỏi bé 5 tuổi là nguy hiểm (kịch bản #6).
+- **Loại lỗi: ngữ cảnh** — chuyến 21:00 có thật nhưng số ghế không đủ cho đặt chỗ này; trả lời đúng dữ liệu từng dòng một vẫn có thể thành câu trả lời sai. Sửa bằng thiết kế: **hiện số ghế còn và số hành khách cạnh nhau**, và khoá `doi_chuyen_bay` khi ghế < hành khách — câu "xin lỗi không đổi được" không cho khách biết tại sao.
+- **HAX/PAIR trỏ chỗ cụ thể:** `G2` → nhãn "1 chỗ — không đủ 2 người" `[1]` · `G11 + PAIR Explainability` → dòng "Dựa vào" `[2]` · `G8/G9 + PAIR Control` → giữ chỗ 20' đếm ngược, sửa trước khi mất `[3]` · `G10` → hỏi "chuyến nào, cho cả 2 người?" thay vì đoán `[4]`.
+- **Lỗi câu chữ không cứu được:** nếu dữ liệu đổi (BM 217 còn 2 chỗ) và AI đổi được từng người một → mẹ bay trước, bé 5 tuổi ở lại — không câu chữ nào cứu. **Thiết kế cứu:** kiểm tra **ghế ≥ hành khách** ngay trước khi gọi `doi_chuyen_bay` và liệt kê tên từng hành khách trong bước xác nhận.
 
 ## §4. Mức tự chủ  (chặng 4)
 Với mỗi tool:
